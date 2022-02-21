@@ -18,13 +18,6 @@ def getYoutubePlaylistItems(yt_obj, playlistId):
     return playlistData
 
 
-def removeDuplicates(existingTracks, tracksToAdd):
-    for track in existingTracks:
-        if track in tracksToAdd:
-            tracksToAdd.remove(track)
-    return tracksToAdd
-
-
 def main():
     # Initialize variables
     tracksListToAdd = []
@@ -50,11 +43,14 @@ def main():
     # check if playlist exists, else create new playlist
     print(spotify.createPlaylist())
 
-    # Check if tracks already exist in playlist
-    # If they do, remove them from tracksListToAdd
+    # Get list of existing tracks in playlist
     existingTrackIds = spotify.getPlaylistTracks()
+
+    # remove duplicates from existing tracks
     if existingTrackIds:
-        tracksListToAdd = removeDuplicates(existingTrackIds, tracksListToAdd)
+        tracksListToAdd = [
+            track for track in tracksListToAdd if track not in existingTrackIds
+        ]
 
     # Add tracks to playlist
     if tracksListToAdd:
